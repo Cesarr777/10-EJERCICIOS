@@ -11,4 +11,8 @@ Este repositorio contiene 10 programas diarios que abarcan diferentes aspectos d
 https://asciinema.org/a/3O7OGjaO3WSvS3ojHwNzqa64v
 
 
+# 10 EJERCICIOS DE HOY 07/11/2024
+
+https://asciinema.org/a/vRkBB4I1DMQ38j6BYOIQRcWpx
+
 
