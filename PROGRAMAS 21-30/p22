@@ -1,0 +1,37 @@
+// Función: ascii_to_int
+// Convierte un carácter ASCII (0-9) en un número entero
+//video https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx
+.section .text
+.global ascii_to_int
+
+ascii_to_int:
+    // La entrada es el carácter en el registro w0
+    // Resta el valor ASCII de '0' (48) para obtener el valor entero
+    sub w0, w0, #'0'
+    ret
+    //.c
+    #include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int ascii_to_int(char c);
+
+int main() {
+    char input_char;
+
+    // Solicitar al usuario que ingrese un carácter ASCII (0-9)
+    printf("Ingrese un carácter ASCII (0-9): ");
+    input_char = getchar();
+
+    // Validar que el carácter ingresado esté en el rango '0'-'9'
+    if (input_char < '0' || input_char > '9') {
+        printf("Error: Carácter inválido.\n");
+        return 1;
+    }
+
+    // Llamar a la función en ensamblador para convertir el carácter
+    int result = ascii_to_int(input_char);
+
+    // Mostrar el resultado
+    printf("El valor entero convertido es: %d\n", result);
+    return 0;
+}
