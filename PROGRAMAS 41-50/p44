@@ -1,0 +1,65 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int random_number(int *seed);
+
+// Función para inicializar y generar múltiples números aleatorios
+void generate_random_numbers(int seed, int count) {
+    for (int i = 0; i < count; i++) {
+        int num = random_number(&seed);  // Llamada a la función ensambladora
+        printf("Número aleatorio %d: %d\n", i + 1, num);
+    }
+}
+
+int main() {
+    int seed, count;
+
+    // Solicitar la semilla
+    printf("Ingrese la semilla para el generador de números aleatorios: ");
+    scanf("%d", &seed);
+
+    // Solicitar la cantidad de números aleatorios
+    printf("Ingrese la cantidad de números aleatorios a generar: ");
+    scanf("%d", &count);
+
+    // Generar y mostrar los números aleatorios
+    generate_random_numbers(seed, count);
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global random_number
+
+// Función random_number
+// Entrada:
+//   x0 = puntero a la semilla (int *seed)
+// Salida:
+//   w0 = número aleatorio generado
+random_number:
+    ldr w1, [x0]               // Cargar el valor de la semilla en w1
+
+    // Parámetros del método de congruencia lineal
+    movz w2, 0x1955, lsl #16   // Multiplicador a (1664525)
+    movk w2, 0x25ED, lsl #0    // Completar el valor de 1664525 en w2
+
+    movz w3, 0x3C6E, lsl #16   // Incremento c (1013904223)
+    movk w3, 0x0F3F, lsl #0    // Completar el valor de 1013904223 en w3
+
+    mov w4, 0x7FFFFFFF         // Módulo m (2^31 - 1 para limitar el rango a 31 bits)
+
+    // Calcular el nuevo valor: (seed * a + c) % m
+    mul w1, w1, w2             // seed * a
+    add w1, w1, w3             // seed * a + c
+    and w1, w1, w4             // Aplicar el módulo m usando una máscara
+
+    // Guardar el nuevo valor de la semilla
+    str w1, [x0]               // Almacenar el nuevo valor de la semilla en la dirección original
+
+    // Devolver el número aleatorio
+    mov w0, w1                 // Mover el valor calculado a w0 para la salida
+    ret                        // Retornar
