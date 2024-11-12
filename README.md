@@ -1,3 +1,5 @@
+![cooltext469857862887593](https://github.com/user-attachments/assets/5b70e279-fcbc-4ffd-a247-9cfceb83778a)
+
 # 10-EJERCICIOS
 
 ## Autor
