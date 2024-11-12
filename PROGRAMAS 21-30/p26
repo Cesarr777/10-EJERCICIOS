@@ -1,0 +1,59 @@
+//cesar alexis peñuelas cardenas
+//itt
+//p26
+//video https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx
+.section .text
+.global bitwise_and
+.global bitwise_or
+.global bitwise_xor
+
+// Función bitwise_and
+// Entradas: x0 = primer número, x1 = segundo número
+// Salida: w0 = resultado de a AND b
+bitwise_and:
+    and w0, w0, w1          // Realizar la operación AND
+    ret                      // Retornar el resultado
+
+// Función bitwise_or
+// Entradas: x0 = primer número, x1 = segundo número
+// Salida: w0 = resultado de a OR b
+bitwise_or:
+    orr w0, w0, w1          // Realizar la operación OR
+    ret                      // Retornar el resultado
+
+// Función bitwise_xor
+// Entradas: x0 = primer número, x1 = segundo número
+// Salida: w0 = resultado de a XOR b
+bitwise_xor:
+    eor w0, w0, w1          // Realizar la operación XOR
+    ret                      // Retornar el resultado
+
+    //.c
+    #include <stdio.h>
+
+// Declaración de las funciones en ensamblador
+extern int bitwise_and(int a, int b);
+extern int bitwise_or(int a, int b);
+extern int bitwise_xor(int a, int b);
+
+int main() {
+    int num1, num2;
+
+    // Solicitar al usuario que ingrese dos números
+    printf("Ingrese el primer número: ");
+    scanf("%d", &num1);
+    printf("Ingrese el segundo número: ");
+    scanf("%d", &num2);
+
+    // Realizar las operaciones en ensamblador
+    int result_and = bitwise_and(num1, num2);
+    int result_or = bitwise_or(num1, num2);
+    int result_xor = bitwise_xor(num1, num2);
+
+    // Imprimir los resultados
+    printf("Resultado de AND: %d\n", result_and);
+    printf("Resultado de OR: %d\n", result_or);
+    printf("Resultado de XOR: %d\n", result_xor);
+
+    return 0;
+}
