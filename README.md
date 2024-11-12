@@ -1,12 +1,7 @@
-![cooltext469857862887593](https://github.com/user-attachments/assets/5b70e279-fcbc-4ffd-a247-9cfceb83778a)
+![Cool Text - Cesar Alexis Peuelas CrdenasNmero de Estudiante 22210335Instituc 469857915740730](https://github.com/user-attachments/assets/7e948af8-cb38-43c5-bf60-90d9e00e949b)
+
 
 # 10-EJERCICIOS
-
-## Autor
-**Cesar Alexis Peñuelas Cárdenas**  
-**Número de Estudiante:** 22210335  
-**Institución:** Instituto Tecnológico de Tijuana
-
 ## Descripción
 Este repositorio contiene 10 programas diarios que abarcan diferentes aspectos de la programación y la resolución de problemas.
 
