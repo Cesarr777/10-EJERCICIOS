@@ -15,7 +15,7 @@ Cada programa está bien documentado y contiene comentarios que explican su func
 ### Enlace a las Grabaciones
 Para complementar el aprendizaje, se han realizado grabaciones de la ejecución de los programas en un entorno de desarrollo en RaspbianOS, usando la arquitectura ARM64. Estas grabaciones muestran los pasos de compilación, ejecución y depuración en tiempo real, ayudando a visualizar el flujo de trabajo típico de desarrollo en ensamblador:
 
-- **Programas 1-10**: [Ver grabación](https://asciinema.org/a/vRkBB4T1iMQ38j6EYOjlQRcWpx)
+- **Programas 1-10**: [Ver grabación](https://asciinema.org/a/3O7OGjaO3WSvS3ojHwNzqa64v)
 - **Programas 11-20**: [Ver grabación](https://asciinema.org/a/3O7OGjJo3WsV5JojHWnzqa64v)
 - **Programas 21-30**: [Ver grabación](https://asciinema.org/a/8Qws85BToIdrxIDBwFnTcvz4V)
 - **Programas 31-40**: [Ver grabación](https://asciinema.org/a/link_programa_31_40)
