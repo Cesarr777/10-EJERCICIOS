@@ -1,0 +1,57 @@
+// Ejercicio24.s: Función en ensamblador para calcular la longitud de una cadena
+//cesar alexis peñuelas cardenas 
+//itt
+//video https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx
+.section .text
+.global string_length
+
+string_length:
+    // Entradas:
+    //   x0 = dirección de la cadena
+    // Salidas:
+    //   w0 = longitud de la cadena
+
+    mov w1, 0                 // Inicializar el contador de longitud en 0
+
+count_loop:
+    ldrb w2, [x0], #1         // Cargar el siguiente byte de la cadena y avanzar el puntero
+    cmp w2, 0                 // Comparar con '\0' (fin de la cadena)
+    beq end                   // Si es '\0', terminar
+    add w1, w1, 1             // Incrementar el contador de longitud
+    b count_loop              // Repetir el ciclo
+
+end:
+    mov w0, w1                // Mover el resultado al registro w0 para la salida
+    ret                       // Retornar al llamador
+
+    //.c
+    #include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int string_length(const char *str);
+
+int main() {
+    char input[256];
+
+    // Solicitar al usuario que ingrese una cadena
+    printf("Ingrese una cadena: ");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        printf("Error al leer la entrada.\n");
+        return 1;
+    }
+
+    // Reemplazar el salto de línea con '\0' si existe
+    for (int i = 0; i < 256; i++) {
+        if (input[i] == '\n') {
+            input[i] = '\0';
+            break;
+        }
+    }
+
+    // Llamar a la función en ensamblador para calcular la longitud
+    int length = string_length(input);
+
+    // Mostrar la longitud de la cadena
+    printf("La longitud de la cadena es: %d\n", length);
+    return 0;
+}
