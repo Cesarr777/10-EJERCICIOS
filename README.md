@@ -9,7 +9,10 @@ https://asciinema.org/a/3O7OGjaO3WSvS3ojHwNzqa64v
 
 
 # 10 EJERCICIOS DE HOY 07/11/2024
-
+1 al 10
 https://asciinema.org/a/vRkBB4I1DMQ38j6BYOIQRcWpx
+
+# 10 EJERCICIOS DE HOY 21-30
+https://asciinema.org/a/0qws85BIoIdrxiDBwFnTcvz4V
 
 
