@@ -1,0 +1,47 @@
+.c
+
+#include <stdio.h>
+#include <time.h>
+
+// Declaración de la función en ensamblador
+extern void example_function();
+
+int main() {
+    struct timespec start, end;
+
+    // Obtener el tiempo antes de ejecutar la función
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    // Llamar a la función de ejemplo (en ensamblador)
+    example_function();
+
+    // Obtener el tiempo después de ejecutar la función
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    // Calcular el tiempo de ejecución en nanosegundos
+    long seconds = end.tv_sec - start.tv_sec;
+    long nanoseconds = end.tv_nsec - start.tv_nsec;
+    double elapsed = seconds + nanoseconds * 1e-9;
+
+    // Mostrar el tiempo de ejecución
+    printf("Tiempo de ejecución: %.9f segundos\n", elapsed);
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global example_function
+
+// Función example_function
+// Esta función simplemente realiza una tarea en un bucle para simular trabajo
+example_function:
+    movz w0, #0xF424           // Cargar la parte baja de 1,000,000 en w0 (0xF424 en hexadecimal es 100,000)
+    movk w0, #0x0, lsl #16     // Completar el valor de 1,000,000 en w0
+
+loop:
+    subs w0, w0, 1             // Restar 1 de w0 (decrementar el contador)
+    bne loop                   // Si w0 no es cero, repetir el bucle
+
+    ret                        // Retornar al finalizar
