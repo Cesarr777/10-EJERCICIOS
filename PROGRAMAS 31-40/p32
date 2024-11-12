@@ -1,0 +1,53 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int power(int base, int exponent);
+
+int main() {
+    int base, exponent;
+
+    // Solicitar al usuario que ingrese la base y el exponente
+    printf("Ingrese la base (x): ");
+    scanf("%d", &base);
+    printf("Ingrese el exponente (n): ");
+    scanf("%d", &exponent);
+
+    // Llamar a la función en ensamblador para calcular la potencia
+    int result = power(base, exponent);
+
+    // Imprimir el resultado
+    printf("Resultado de %d^%d: %d\n", base, exponent, result);
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global power
+
+// Función power
+// Entradas: x0 = base (x), x1 = exponente (n)
+// Salida: w0 = resultado de x^n
+power:
+    mov w2, 1                 // Inicializar el resultado en 1 (w2 es el acumulador)
+
+    cmp w1, 0                 // Comparar el exponente con 0
+    beq end_power             // Si el exponente es 0, retornar 1 (cualquier número elevado a 0 es 1)
+
+power_loop:
+    and w3, w1, 1             // Verificar si el exponente es impar (w1 & 1)
+    cbz w3, skip_multiply     // Si el bit menos significativo es 0, el exponente es par, saltar la multiplicación
+    mul w2, w2, w0            // Multiplicar el acumulador por la base
+
+skip_multiply:
+    mul w0, w0, w0            // Elevar la base al cuadrado (base *= base)
+    lsr w1, w1, 1             // Dividir el exponente por 2 (exponente >>= 1)
+    cmp w1, 0                 // Verificar si el exponente es 0
+    bne power_loop            // Repetir el bucle si el exponente aún no es 0
+
+end_power:
+    mov w0, w2                // Mover el resultado acumulado a w0 para el retorno
+    ret                       // Retornar el resultado
