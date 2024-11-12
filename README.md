@@ -17,7 +17,7 @@ Para complementar el aprendizaje, se han realizado grabaciones de la ejecución 
 
 - **Programas 1-10**: [Ver grabación](https://asciinema.org/a/3O7OGjaO3WSvS3ojHwNzqa64v)
 - **Programas 11-20**: [Ver grabación](https://asciinema.org/a/As2FDs2LW3S29muAqxiE1y3Y2)
-- **Programas 21-30**: [Ver grabación](https://asciinema.org/a/8Qws85BToIdrxIDBwFnTcvz4V)
+- **Programas 21-30**: [Ver grabación](https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx)
 - **Programas 31-40**: [Ver grabación](https://asciinema.org/a/link_programa_31_40)
 - **Programas 41-50**: [Ver grabación](https://asciinema.org/a/link_programa_41_50)
 
