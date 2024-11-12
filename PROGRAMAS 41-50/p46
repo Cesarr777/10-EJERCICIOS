@@ -1,0 +1,107 @@
+.c
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_STRINGS 10
+#define MAX_LENGTH 100
+
+// Declaración de la función en ensamblador
+extern int longest_common_prefix(char *strings[], int count, char *prefix);
+
+int main() {
+    int n;
+    char strings[MAX_STRINGS][MAX_LENGTH];
+    char *string_ptrs[MAX_STRINGS];  // Punteros a las cadenas
+
+    // Solicitar el número de cadenas
+    printf("Ingrese el número de cadenas (máximo %d): ", MAX_STRINGS);
+    scanf("%d", &n);
+
+    if (n < 2) {
+        printf("Debe ingresar al menos dos cadenas para comparar.\n");
+        return 1;
+    }
+
+    // Limpiar el buffer de entrada
+    getchar();
+
+    // Leer las cadenas
+    for (int i = 0; i < n; i++) {
+        printf("Ingrese la cadena %d: ", i + 1);
+        fgets(strings[i], MAX_LENGTH, stdin);
+
+        // Eliminar el salto de línea al final de la cadena
+        strings[i][strcspn(strings[i], "\n")] = '\0';
+        string_ptrs[i] = strings[i];  // Almacenar el puntero a cada cadena
+    }
+
+    char prefix[MAX_LENGTH];  // Para almacenar el prefijo común
+
+    // Llamar a la función en ensamblador para encontrar el prefijo común
+    int prefix_length = longest_common_prefix(string_ptrs, n, prefix);
+
+    // Mostrar el resultado
+    if (prefix_length > 0) {
+        printf("El prefijo común más largo es: %s\n", prefix);
+    } else {
+        printf("No hay un prefijo común.\n");
+    }
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global longest_common_prefix
+
+// Función longest_common_prefix
+// Entradas:
+//   x0 = puntero al arreglo de punteros a cadenas
+//   x1 = número de cadenas
+//   x2 = puntero al buffer para almacenar el prefijo común
+// Salida:
+//   w0 = longitud del prefijo común encontrado
+longest_common_prefix:
+    cbz x1, end               // Si el número de cadenas es 0, retornar 0
+    mov w3, 0                 // Inicializar el índice de prefijo (w3)
+
+loop_chars:
+    // Cargar el primer carácter de la primera cadena
+    ldr x4, [x0]              // Cargar el puntero de la primera cadena en x4
+    add x4, x4, w3, sxtw      // Avanzar al carácter actual de la primera cadena (sign extend)
+    ldrb w5, [x4]             // Cargar el carácter en w5
+    cbz w5, end_prefix        // Si es el fin de la cadena, ir al final del prefijo
+
+    // Comenzar la comparación con las demás cadenas
+    mov x6, x0                // Restablecer el puntero al arreglo de cadenas
+    mov w7, 1                 // Índice de cadena (comenzar desde la segunda cadena)
+
+compare_loop:
+    cmp w7, w1                // Comparar índice de cadena con el número total
+    b.ge store_char           // Si se han comparado todas las cadenas, guardar el carácter
+
+    // Cargar el carácter correspondiente de la cadena actual
+    ldr x8, [x6, x7, lsl #3]  // Cargar el puntero de la cadena x7 (usar lsl para multiplicar por 8)
+    add x8, x8, w3, sxtw      // Mover el puntero al carácter actual de la cadena (sign extend)
+    ldrb w9, [x8]             // Cargar el carácter en w9
+    cmp w5, w9                // Comparar el carácter con el de la primera cadena
+    b.ne end_prefix           // Si es diferente, terminar el prefijo
+    add w7, w7, 1             // Incrementar el índice de cadena
+    b compare_loop            // Repetir para la siguiente cadena
+
+store_char:
+    // Guardar el carácter en el buffer de prefijo
+    strb w5, [x2, w3, sxtw]   // Almacenar el carácter actual en el buffer de prefijo (sign extend)
+    add w3, w3, 1             // Incrementar la longitud del prefijo
+    b loop_chars              // Repetir para el siguiente carácter
+
+end_prefix:
+    strb wzr, [x2, w3, sxtw]  // Agregar un carácter nulo al final del prefijo (sign extend)
+    mov w0, w3                // Devolver la longitud del prefijo
+    ret
+
+end:
+    mov w0, 0                 // Si no hay cadenas, retornar 0
+    ret
