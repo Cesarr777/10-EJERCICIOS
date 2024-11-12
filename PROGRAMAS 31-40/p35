@@ -1,0 +1,108 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern void rotate_array(int *array, int size, int positions, int direction);
+
+int main() {
+    int size, positions, direction;
+
+    // Solicitar el tamaño del arreglo
+    printf("Ingrese el tamaño del arreglo: ");
+    scanf("%d", &size);
+
+    int array[size];
+
+    // Solicitar los elementos del arreglo
+    printf("Ingrese los elementos del arreglo:\n");
+    for (int i = 0; i < size; i++) {
+        printf("Elemento %d: ", i);
+        scanf("%d", &array[i]);
+    }
+
+    // Solicitar la cantidad de posiciones y la dirección de rotación
+    printf("Ingrese la cantidad de posiciones para rotar: ");
+    scanf("%d", &positions);
+    printf("Ingrese la dirección de la rotación (0 = izquierda, 1 = derecha): ");
+    scanf("%d", &direction);
+
+    // Llamar a la función en ensamblador para rotar el arreglo
+    rotate_array(array, size, positions, direction);
+
+    // Imprimir el arreglo rotado
+    printf("Arreglo rotado:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global rotate_array
+
+// Función rotate_array
+// Entradas:
+//   x0 = dirección del arreglo
+//   x1 = tamaño del arreglo
+//   x2 = cantidad de posiciones para rotar
+//   x3 = dirección de rotación (0 = izquierda, 1 = derecha)
+rotate_array:
+    cmp x2, 0                  // Si posiciones = 0, no hay rotación
+    beq end_rotate             // Terminar si no hay posiciones para rotar
+
+    cmp x3, 0                  // Verificar dirección de rotación
+    beq rotate_left            // Si es 0, rotar a la izquierda
+    b rotate_right             // Si es 1, rotar a la derecha
+
+// Rotación a la izquierda
+rotate_left:
+rotate_left_loop:
+    ldr w4, [x0]               // Guardar el primer elemento temporalmente en w4
+
+    mov x5, 1                  // Índice inicial para rotación izquierda
+rotate_left_shift:
+    cmp x5, x1                 // Comparar índice con el tamaño
+    bge finish_rotate_left     // Si alcanzamos el final, terminamos el bucle interno
+
+    ldr w6, [x0, x5, LSL #2]   // Cargar array[x5] en w6
+    sub x7, x5, 1              // Calcular índice x5 - 1
+    str w6, [x0, x7, LSL #2]   // Guardar array[x5] en array[x5 - 1]
+    add x5, x5, 1              // Incrementar índice
+    b rotate_left_shift        // Repetir el bucle interno
+
+finish_rotate_left:
+    sub x7, x1, 1              // Calcular índice final (size - 1)
+    str w4, [x0, x7, LSL #2]   // Colocar el primer elemento al final
+    sub x2, x2, 1              // Reducir las posiciones restantes
+    cbnz x2, rotate_left_loop  // Repetir hasta que no haya más rotaciones
+    b end_rotate               // Terminar
+
+// Rotación a la derecha
+rotate_right:
+rotate_right_loop:
+    sub x7, x1, 1              // Calcular índice final (size - 1)
+    ldr w4, [x0, x7, LSL #2]   // Guardar el último elemento temporalmente en w4
+
+    sub x5, x1, 2              // Índice inicial para rotación derecha
+rotate_right_shift:
+    cmp x5, -1                 // Comparar índice con -1
+    blt finish_rotate_right    // Si es menor que 0, terminamos el bucle interno
+
+    add x6, x5, 1              // Calcular índice x5 + 1
+    ldr w7, [x0, x5, LSL #2]   // Cargar array[x5] en w7
+    str w7, [x0, x6, LSL #2]   // Guardar array[x5] en array[x5 + 1]
+    sub x5, x5, 1              // Decrementar índice
+    b rotate_right_shift       // Repetir el bucle interno
+
+finish_rotate_right:
+    str w4, [x0]               // Colocar el último elemento al principio
+    sub x2, x2, 1              // Reducir las posiciones restantes
+    cbnz x2, rotate_right_loop // Repetir hasta que no haya más rotaciones
+
+end_rotate:
+    ret                         // Terminar la función
