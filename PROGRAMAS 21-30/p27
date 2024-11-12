@@ -1,0 +1,46 @@
+//cesar alexis peñuelas cardenas
+//itt
+//videohttps://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx
+.section .text
+.global shift_left
+.global shift_right
+
+// Función shift_left
+// Entradas: x0 = número, x1 = cantidad de posiciones
+// Salida: w0 = resultado del desplazamiento a la izquierda
+shift_left:
+    lsl w0, w0, w1          // Desplazamiento lógico a la izquierda
+    ret                      // Retornar el resultado
+
+// Función shift_right
+// Entradas: x0 = número, x1 = cantidad de posiciones
+// Salida: w0 = resultado del desplazamiento a la derecha
+shift_right:
+    lsr w0, w0, w1          // Desplazamiento lógico a la derecha
+    ret                      // Retornar el resultado
+    //.c
+    #include <stdio.h>
+
+// Declaración de las funciones en ensamblador
+extern int shift_left(int num, int positions);
+extern int shift_right(int num, int positions);
+
+int main() {
+    int num, positions;
+
+    // Solicitar al usuario que ingrese un número y la cantidad de posiciones
+    printf("Ingrese un número: ");
+    scanf("%d", &num);
+    printf("Ingrese la cantidad de posiciones para el desplazamiento: ");
+    scanf("%d", &positions);
+
+    // Realizar los desplazamientos en ensamblador
+    int result_left = shift_left(num, positions);
+    int result_right = shift_right(num, positions);
+
+    // Imprimir los resultados
+    printf("Resultado de desplazamiento a la izquierda: %d\n", result_left);
+    printf("Resultado de desplazamiento a la derecha: %d\n", result_right);
+
+    return 0;
+}
