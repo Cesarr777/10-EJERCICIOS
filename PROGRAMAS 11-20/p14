@@ -1,0 +1,138 @@
+//instituto tecnologico de tijuana //cesar alexis peñuelas cardenas //22210335
+//video https://asciinema.org/a/As2FDs2LW3S29muAqxiE1y3Y2
+/*using System;
+
+class Program
+{
+    static void Main()
+    {
+        // Definir el arreglo de enteros
+        int[] array = { 5, 3, 8, 1, 2 }; // Arreglo de ejemplo
+        int length = array.Length;
+
+        // Mostrar el mensaje de inicio
+        Console.WriteLine("El mínimo en el arreglo:");
+
+        // Mostrar el contenido del arreglo
+        for (int i = 0; i < length; i++)
+        {
+            Console.Write(array[i]);
+            if (i < length - 1)
+            {
+                Console.Write(" "); // Espacio entre números
+            }
+        }
+        Console.WriteLine(); // Nueva línea después de imprimir el arreglo
+
+        // Encontrar el mínimo en el arreglo
+        int minValue = FindMin(array, length);
+
+        // Mostrar el mensaje del valor mínimo encontrado
+        Console.WriteLine("El mínimo valor en el arreglo es: " + minValue);
+    }
+
+    static int FindMin(int[] array, int length)
+    {
+        // Inicializar el valor mínimo con el primer elemento del arreglo
+        int min = array[0];
+
+        // Iterar sobre el arreglo para encontrar el mínimo
+        for (int i = 1; i < length; i++)
+        {
+            if (array[i] < min)
+            {
+                min = array[i]; // Actualizar el mínimo si se encuentra un valor menor
+            }
+        }
+
+        return min; // Retornar el mínimo encontrado
+    }
+}
+*/
+
+.data
+    // Mensajes del programa
+    msg_inicio:    .asciz "Programa de búsqueda lineal\n"
+    prompt_buscar: .asciz "Número a buscar: "
+    msg_encontrado: .asciz "Número encontrado en la posición: "
+    msg_no_encontrado: .asciz "Número no encontrado\n"
+    newline:       .asciz "\n"
+
+    // Arreglo de ejemplo con números
+    array:         .word   4, 8, 15, 16, 23, 42, 56, 71, 88, 92
+    array_size:    .word   10   // Tamaño del arreglo
+
+.text
+.global _start
+
+_start:
+    // Imprimir mensaje de inicio
+    mov x0, #1              // fd = 1 (stdout)
+    adr x1, msg_inicio      // puntero al mensaje
+    mov x2, #26             // longitud del mensaje
+    mov x8, #64             // syscall write
+    svc #0
+
+    // Imprimir prompt para número a buscar
+    mov x0, #1
+    adr x1, prompt_buscar
+    mov x2, #17
+    mov x8, #64
+    svc #0
+
+    // Preparar para la búsqueda
+    mov x19, #42           // Número a buscar (ejemplo: 42)
+    adr x20, array         // Dirección base del arreglo
+    mov x21, #0           // Índice actual
+    adr x22, array_size
+    ldr w22, [x22]        // Tamaño del arreglo
+
+buscar:
+    cmp x21, x22          // Comparar índice con tamaño
+    b.ge no_encontrado    // Si llegamos al final, no se encontró
+
+    ldr w23, [x20, x21, lsl #2]  // Cargar elemento actual
+    cmp w23, w19          // Comparar con número buscado
+    b.eq encontrado       // Si son iguales, encontramos el número
+
+    add x21, x21, #1      // Incrementar índice
+    b buscar              // Siguiente iteración
+
+encontrado:
+    // Imprimir mensaje de encontrado
+    mov x0, #1
+    adr x1, msg_encontrado
+    mov x2, #31
+    mov x8, #64
+    svc #0
+
+    // Convertir posición a ASCII e imprimir
+    mov x1, sp            // Usar stack como buffer temporal
+    mov w4, w21           // Copiar índice para convertir
+    add w4, w4, #48       // Convertir a ASCII
+    strb w4, [x1]         // Guardar en stack
+    mov x0, #1
+    mov x2, #1
+    mov x8, #64
+    svc #0
+
+    // Imprimir nueva línea
+    mov x0, #1
+    adr x1, newline
+    mov x2, #1
+    mov x8, #64
+    svc #0
+    b exit
+
+no_encontrado:
+    // Imprimir mensaje de no encontrado
+    mov x0, #1
+    adr x1, msg_no_encontrado
+    mov x2, #19
+    mov x8, #64
+    svc #0
+
+exit:
+    // Terminar programa
+    mov x8, #93           // syscall exit
+    mov x0, #0            // código de retorno 0
