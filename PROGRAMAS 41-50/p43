@@ -1,0 +1,81 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int calculate(int a, int b, char op);
+
+int main() {
+    int a, b;
+    char op;
+    int result;
+
+    // Solicitar al usuario los dos números
+    printf("Ingrese el primer número: ");
+    scanf("%d", &a);
+    printf("Ingrese el segundo número: ");
+    scanf("%d", &b);
+
+    // Solicitar al usuario la operación
+    printf("Ingrese la operación (+, -, *, /): ");
+    scanf(" %c", &op);  // Espacio antes de %c para ignorar saltos de línea
+
+    // Llamar a la función en ensamblador para realizar la operación
+    result = calculate(a, b, op);
+
+    // Mostrar el resultado
+    printf("El resultado de %d %c %d es: %d\n", a, op, b, result);
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global calculate
+
+// Función calculate
+// Entradas:
+//   w0 = primer número (a)
+//   w1 = segundo número (b)
+//   w2 = operador (op) como carácter
+// Salida:
+//   w0 = resultado de la operación
+calculate:
+    cmp w2, '+'               // Comparar el operador con '+'
+    beq do_addition           // Si es '+', hacer la suma
+
+    cmp w2, '-'               // Comparar el operador con '-'
+    beq do_subtraction        // Si es '-', hacer la resta
+
+    cmp w2, '*'               // Comparar el operador con '*'
+    beq do_multiplication     // Si es '*', hacer la multiplicación
+
+    cmp w2, '/'               // Comparar el operador con '/'
+    beq do_division           // Si es '/', hacer la división
+
+    // Si el operador es inválido, devolver 0 como resultado
+    mov w0, 0
+    ret
+
+do_addition:
+    add w0, w0, w1            // Realizar la suma
+    ret
+
+do_subtraction:
+    sub w0, w0, w1            // Realizar la resta
+    ret
+
+do_multiplication:
+    mul w0, w0, w1            // Realizar la multiplicación
+    ret
+
+do_division:
+    // Comprobar si el divisor es 0 para evitar la división por cero
+    cbz w1, division_by_zero  // Si b == 0, ir a manejo de división por cero
+    sdiv w0, w0, w1           // Realizar la división
+    ret
+
+division_by_zero:
+    mov w0, 0                 // Retornar 0 si hay división por cero
+    ret
