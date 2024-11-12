@@ -19,7 +19,9 @@ Para complementar el aprendizaje, se han realizado grabaciones de la ejecución 
 - **Programas 11-20**: [Ver grabación](https://asciinema.org/a/As2FDs2LW3S29muAqxiE1y3Y2)
 - **Programas 21-30**: [Ver grabación](https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx)
 - **Programas 31-40**: [Ver grabación](https://asciinema.org/a/Zl0rWfcbnnprexoqtkh9naZ0d)
-- **Programas 41-50**: [Ver grabación](https://asciinema.org/a/link_programa_41_50)
+- **Programas 41-50**: [Ver grabación](//cesar alexis peñuelas cardenas
+//itt
+//video https://asciinema.org/a/scZnoBuATImeYd0s4ohZubero)
 
 Cada enlace lleva a una sesión de `asciinema`, permitiendo reproducir y estudiar cada paso en el proceso de desarrollo.
 
