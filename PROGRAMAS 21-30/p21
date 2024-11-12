@@ -1,5 +1,7 @@
 // Ejercicio21.s: Función en ensamblador para transponer una matriz 3x3
 //video https://asciinema.org/a/5QJIjcaUtgps3aJZNmkzuhvsx
+//cesar alexis peñuelas cardenas
+//itt
 .section .text
 .global transpose_matrix
 
