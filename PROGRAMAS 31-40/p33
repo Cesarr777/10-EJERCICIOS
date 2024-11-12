@@ -1,0 +1,55 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int sum_array(int *array, int size);
+
+int main() {
+    int size;
+
+    // Solicitar el tamaño del arreglo
+    printf("Ingrese el tamaño del arreglo: ");
+    scanf("%d", &size);
+
+    int array[size];
+
+    // Solicitar los elementos del arreglo
+    printf("Ingrese los elementos del arreglo:\n");
+    for (int i = 0; i < size; i++) {
+        printf("Elemento %d: ", i);
+        scanf("%d", &array[i]);
+    }
+
+    // Llamar a la función en ensamblador para calcular la suma
+    int result = sum_array(array, size);
+
+    // Imprimir el resultado
+    printf("La suma de los elementos del arreglo es: %d\n", result);
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global sum_array
+
+// Función sum_array
+// Entradas: x0 = dirección del arreglo, x1 = tamaño del arreglo
+// Salida: w0 = suma de los elementos del arreglo
+sum_array:
+    mov w2, 0                  // Inicializar la suma en 0 (acumulador)
+
+    cmp w1, 0                  // Verificar si el tamaño es 0
+    beq end_sum                // Si el tamaño es 0, retornar 0
+
+loop:
+    ldr w3, [x0], 4            // Cargar el siguiente elemento del arreglo y avanzar el puntero
+    add w2, w2, w3             // Sumar el elemento al acumulador
+    subs w1, w1, 1             // Decrementar el contador de tamaño
+    bne loop                   // Repetir el bucle si aún hay elementos
+
+end_sum:
+    mov w0, w2                 // Mover la suma total a w0 para el retorno
+    ret                        // Retornar el resultado
