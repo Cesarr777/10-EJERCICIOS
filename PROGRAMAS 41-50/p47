@@ -1,0 +1,53 @@
+.c
+
+#include <stdio.h>
+
+// Declaración de la función en ensamblador
+extern int add_with_overflow_detection(int a, int b, int *result);
+
+int main() {
+    int a, b, result;
+
+    // Solicitar los dos números al usuario
+    printf("Ingrese el primer número: ");
+    scanf("%d", &a);
+    printf("Ingrese el segundo número: ");
+    scanf("%d", &b);
+
+    // Llamar a la función en ensamblador para sumar y detectar desbordamiento
+    int overflow = add_with_overflow_detection(a, b, &result);
+
+    // Mostrar el resultado
+    if (overflow) {
+        printf("Desbordamiento detectado en la suma de %d y %d.\n", a, b);
+    } else {
+        printf("El resultado de la suma es: %d\n", result);
+    }
+
+    return 0;
+}
+
+.s
+
+.section .text
+.global add_with_overflow_detection
+
+// Función add_with_overflow_detection
+// Entradas:
+//   w0 = primer número (a)
+//   w1 = segundo número (b)
+//   x2 = puntero al resultado (int *result)
+// Salida:
+//   w0 = 1 si hay desbordamiento, 0 si no hay desbordamiento
+add_with_overflow_detection:
+    adds w3, w0, w1          // Sumar w0 y w1, guardar en w3 y actualizar las banderas
+    bvs overflow_detected     // Si hay desbordamiento (V=1), saltar a overflow_detected
+
+    // No hubo desbordamiento
+    str w3, [x2]              // Almacenar el resultado en *result
+    mov w0, 0                 // Retornar 0 indicando que no hubo desbordamiento
+    ret
+
+overflow_detected:
+    mov w0, 1                 // Retornar 1 indicando que hubo desbordamiento
+    ret
